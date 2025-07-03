@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>News</title>
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <!-- Custom stlylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <div id="header">
+        <!-- container -->
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- LOGO -->
+                <div class="col-md-3">
+                    <% if (settings && settings.siteLogo) { %>
+                        <img src="/uploads/<%= settings.siteLogo %>" id="logo" alt="Site Logo">
+                        <% } else if (settings && settings.siteName) { %>
+                            <h2 id="site-title">
+                                <%= settings.siteName %>
+                            </h2>
+                            <% } else{ %>
+                                <a href="/" id="logo"><img src="/images/news.jpg" alt="Logo" /></a>
+                                <% } %>
+                </div>
+                <!-- /LOGO -->
+            </div>
+        </div>
+    </div>
+    <!-- /HEADER -->
+    <!-- Menu Bar -->
+    <div id="menu-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class='menu'>
+                        <% if(categories.length> 0) {%>
+                            <% for(let category of categories) { %>
+                                <li><a href='/category/<%= category.slug %>'>
+                                        <%= category.name %>
+                                    </a></li>
+                                <% } %>
+                                    <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Menu Bar -->
+
+    <div id="main-content">
+        <div class="container">
+            <div class="row flex-nowrap">
+
+                <!-- Sidebar -->
+                <!-- Main Content -->
+                <div class="col-md-8">
+                    <%- body %>
+                </div>
+                <%- include('partials/sidebar') %>
+
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <% if (settings && settings.siteFooter) { %>
+                        <p>
+                            <%= settings.siteFooter %>
+                        </p>
+                        <% } else{ %>
+                            <span>© Copyright 2025 News | Powered by Vinod</span>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    const siteTitle =  document.getElementById('site-title');
+    siteTitle.addEventListener('click', function() {
+        window.location.href = '/';
+    });
+</script>

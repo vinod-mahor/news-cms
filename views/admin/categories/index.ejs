@@ -1,0 +1,85 @@
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="admin-heading"><i class="fa fa-gears"></i> All Categories</h1>
+                <h6 class="lead">Total Categories:<%= totalCategories %></h6>
+            </div>
+            <div class="col-md-2">
+                <a class="add-new" href="/admin/add-category">add category</a>
+            </div>
+            <div class="col-md-12">
+                <table class="content-table">
+                    <thead>
+                        <th>S.No.</th>
+                        <th>Category Name</th>
+                        <th>No. of Article</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </thead>
+                    <tbody>
+                        <% categories.forEach((category, index)=> { %>
+                            <tr>
+                                <td class='id'>
+                                    <%= (currentPage - 1) * (typeof limit !=='undefined' ? limit : 10) + index + 1 %>
+                                </td>
+                                <td>
+                                    <%= category.name %>
+                                </td>
+                                <td>
+                                    <%= category.newsCount %>
+                                </td>
+                                <td class='edit'><a href='/admin/update-category/<%= category._id %>'><i
+                                            class='fa fa-edit text-info'></i></a></td>
+                                <td class='delete '><a href='/admin/delete-category/<%= category._id %>'><i
+                                            class='fa fa-trash-o text-danger'></i></a></td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination">
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="/admin/category?page=<%= currentPage - 1 %>&limit=<%= typeof limit !== 'undefined' ? limit : 10 %>">Previous</a>
+                            </li>
+                            <% } else { %>
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                                <% } %>
+                                    <% for (let i=1; i <=totalPages; i++) { %>
+                                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                            <a class="page-link"
+                                                href="?page=<%= i %>&limit=<%= typeof limit !== 'undefined' ? limit : 10 %>">
+                                                <%= i %>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                            <% if (currentPage < totalPages) { %>
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="?page=<%= currentPage + 1 %>&limit=<%=  typeof limit !== 'undefined' ? limit : 10  %>">Next</a>
+                                                </li>
+                                                <% } %>
+                                                    </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteLinks = document.querySelectorAll('.delete a');
+    deleteLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const confirmed = confirm('Are you sure you want to delete this category?');
+            if (confirmed) {
+                window.location.href = link.href;
+            }
+        });
+    });
+</script>

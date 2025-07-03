@@ -1,0 +1,46 @@
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="admin-heading"><i class="fa fa-cog"></i> Settings</h1>
+            </div>
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <h5 class="card-header">Settings</h5>
+                    <div class="card-body">
+                        <form action="/admin/save-settings" method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="siteName" class="form-label">Website Title</label>
+                                <input type="text" value="<%= settings ? settings.siteName : '' %>" name="siteName"
+                                    class="form-control" autocomplete="off" required="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="admin-email" class="form-label">Admin Email</label>
+                                <input type="email" value="<%= settings ? settings.adminEmail : '' %>" name="adminEmail"
+                                    class="form-control" autocomplete="off" required="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="siteFooter" class="form-label">Footer Description</label>
+                                <input type="text" value="<%= settings ? settings.siteFooter : '' %>" name="siteFooter"
+                                    class="form-control" autocomplete="off" required="">
+                            </div>
+                            <br>
+                            <% if (settings && settings.siteLogo) { %>
+                                <label class="form-check-label" for="customCheck1">Remove logo</label>
+                                <input type="checkbox" name="removeLogo" class="form-check-input" id="customCheck1">
+                                <img class="img-thumbnail" src="<%= settings.siteLogo ? " /uploads/" + settings.siteLogo
+                                    : '' %>" height="100" width="100" alt="">
+                                <% } %>
+                                    <div class="mb-3">
+                                        <label for="siteLogo" class="form-label">Upload Logo</label>
+                                        <input type="file" name="siteLogo" class="form-control">
+                                    </div>
+                                    <input type="submit" name="submit" class="btn btn-primary" value="Save" required="">
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

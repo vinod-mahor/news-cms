@@ -1,0 +1,141 @@
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="admin-heading"><i class="fa fa-comments"></i> Comments Management</h1>
+                <h6 class="lead">Total Comments : <%= totalComments %></h6>
+            </div>
+            <div class="col-md-12">
+                <table class="content-table" style="background: white;">
+                    <thead>
+                        <th>Sr.No.</th>
+                        <th>Article</th>
+                        <th>Name</th>
+                        <th>Comment</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </thead>
+                    <tbody>
+                        <% if (comments && comments.length> 0) { %>
+                            <% comments.forEach((comment, index) => { %>
+                                <tr>
+                                    <td> <%= (currentPage - 1) * (typeof limit !=='undefined' ? limit : 10) + index + 1 %></td>
+                                    <td class='id'>
+                                        <%= comment.article.title ? comment.article.title : 'Untitled' %>
+                                    </td>
+                                    <td>
+                                        <%= comment.name %>
+                                    </td>
+                                    <td>
+                                        <%= comment.content %>
+                                    </td>
+                                    <td class="<%= comment.status=="approved"?"text-success":"" %>">
+                                        <%= comment.status %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(comment.createdAt).toLocaleDateString('en-GB') %>
+                                    </td>
+                                    <td class='edit'>
+                                        <select name="status"
+                                            class="form-select form-select-sm d-inline-block w-auto comment-dropdown"
+                                            data-commentId="<%= comment._id %>"
+                                            data-comment-status="<%= comment.status %>">
+                                            <option value="pending" <%=comment.status==='pending' ? 'selected' : '' %>
+                                                >Pending</option>
+                                            <option value="approved" <%=comment.status==='approved' ? 'selected' : '' %>
+                                                >Approved</option>
+                                            <option value="rejected" <%=comment.status==='rejected' ? 'selected' : '' %>
+                                                >Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="7" class="text-center">No comments found</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="/admin/comments?page=<%= currentPage - 1 %>&limit=<%= typeof limit !== 'undefined' ? limit : 10 %>">Previous</a>
+                            </li>
+                            <% } else { %>
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                                <% } %>
+                                    <% for (let i=1; i <=totalPages; i++) { %>
+                                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                            <a class="page-link"
+                                                href="?page=<%= i %>&limit=<%= typeof limit !== 'undefined' ? limit : 10 %>">
+                                                <%= i %>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                            <% if (currentPage < totalPages) { %>
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="?page=<%= currentPage + 1 %>&limit=<%=  typeof limit !== 'undefined' ? limit : 10  %>">Next</a>
+                                                </li>
+                                                <% } %>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.comment-dropdown').forEach(dropdown => {
+        dropdown.addEventListener('change', async (e) => {
+            const newStatus = e.target.value;
+            const commentId = e.target.getAttribute('data-commentId');
+            if (newStatus !== "rejected") {
+                const res = await fetch(`/admin/comments/${commentId}/update-status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const result = await res.json();
+                if (res.status === 200) {
+                    alert('Status updated successfully!');
+                } else {
+                    alert('Failed to update status.');
+                }
+            }
+            else if (newStatus === "rejected") {
+                if (confirm("Do you want to reject and delete comment!")) {
+                    const res = await fetch(`/admin/comments/${commentId}/delete-comment`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    const result = await res.json();
+                    if (res.status === 200) {
+                        alert('Comment deleted successfully!');
+                    } else {
+                        alert('Failed to delete comment.');
+                    }
+                } else {
+                    // Reset dropdown to previous value if user cancels
+                    e.target.value = e.target.getAttribute('data-comment-status');
+                }
+
+            }
+
+        }
+
+        )
+    }
+    );
+</script>

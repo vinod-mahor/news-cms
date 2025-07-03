@@ -1,0 +1,82 @@
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="admin-heading"><i class="fa fa-users"></i> All Users</h1>
+                <h6 class="lead">Total Users: <%= totalUsers %></h6>
+            </div>
+            <div class="col-md-2">
+                <a class="add-new" href="/admin/add-user">add user</a>
+            </div>
+            <div class="col-md-12">
+                <table class="content-table">
+                    <thead>
+                        <th>S.No.</th>
+                        <th>Full Name</th>
+                        <th>User Name</th>
+                        <th>Role</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </thead>
+                    <tbody>
+                        <% if (allUsers) { %>
+                            <% allUsers.forEach((user, index)=> { %>
+                                <tr>
+                                    <td class='id'>
+                                        <%= (currentPage - 1) * (typeof limit !== 'undefined' ? limit : 10) + index + 1 %>
+                                    </td>
+                                    <td>
+                                        <%= user.fullname %>
+                                    </td>
+                                    <td>
+                                        <%= user.username %>
+                                    </td>
+                                    <td>
+                                        <%= user.role %>
+                                    </td>
+                                    <td class='edit'><a href='/admin/update-user/<%= user._id %>'><i
+                                                class='fa fa-edit text-info'></i></a></td>
+                                    <td class='delete'><a href='javascript:void(0)' onclick='deleteUser("<%= user._id %>")'><i
+                                                class='fa fa-trash-o text-danger'></i></a></td>
+                                </tr>
+                                <% }); %>
+                                    <% } %>
+
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/admin/users?page=<%= currentPage - 1 %>&limit=<%= typeof limit !== 'undefined' ? limit : 10 %>">Previous</a>
+                            </li>
+                        <% } else { %>
+                            <li class="page-item disabled">
+                                <a class="page-link">Previous</a>
+                            </li>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>&limit=<%= typeof limit !== 'undefined' ? limit : 10 %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%=  typeof limit !== 'undefined' ? limit : 10  %>">Next</a>
+                            </li>
+                        <% } %>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteUser = (userId) => {
+        if (confirm("Are you sure you want to delete this user?")) {
+            window.location.href = '/admin/delete-user/' + userId;
+        }
+    }
+</script>
